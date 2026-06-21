@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ironline Freight — Coast-to-Coast Logistics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Black&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --asphalt:#16181c;
+    --asphalt-2:#1d2026;
+    --concrete:#e8e6e0;
+    --concrete-2:#c9c6bd;
+    --hazard:#f5c518;       /* highway sign yellow */
+    --hazard-deep:#e0a400;
+    --line:#3a3e46;
+    --paint:#ffffff;        /* lane paint */
+    --signal:#ff5630;
+    --ok:#36b37e;
+    --r:4px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--asphalt);
+    color:var(--concrete);
+    font-family:'Archivo',system-ui,sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--hazard);color:var(--asphalt)}
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:'Spline Sans Mono',monospace}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 28px}
+
+  /* ===== HAZARD STRIPE ===== */
+  .stripe{
+    height:10px;
+    background:repeating-linear-gradient(135deg,var(--hazard) 0 28px,var(--asphalt) 28px 56px);
+  }
+
+  /* ===== NAV ===== */
+  nav{
+    position:sticky;top:0;z-index:60;
+    background:rgba(22,24,28,.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:74px}
+  .logo{display:flex;align-items:center;gap:12px;font-family:'Archivo Black';font-size:1.25rem;letter-spacing:-.5px}
+  .logo .mark{
+    width:38px;height:38px;border-radius:var(--r);
+    background:var(--hazard);color:var(--asphalt);
+    display:grid;place-items:center;font-size:1.1rem;
+    border:2px solid var(--asphalt);box-shadow:0 0 0 2px var(--hazard);
+  }
+  .nav-links{display:flex;gap:34px;align-items:center}
+  .nav-links a{font-weight:600;font-size:.92rem;color:var(--concrete-2);transition:color .2s;position:relative}
+  .nav-links a:hover{color:var(--paint)}
+  .nav-cta{
+    background:var(--hazard);color:var(--asphalt);
+    padding:11px 22px;border-radius:var(--r);font-weight:800;font-size:.9rem;
+    transition:transform .15s, background .2s;
+  }
+  .nav-cta:hover{background:var(--paint);transform:translateY(-1px)}
+  .burger{display:none;flex-direction:column;gap:5px;background:none;border:0;cursor:pointer;padding:8px}
+  .burger span{width:26px;height:2.5px;background:var(--concrete);border-radius:2px;transition:.25s}
+
+  /* ===== HERO ===== */
+  .hero{position:relative;padding:90px 0 70px;overflow:hidden}
+  .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:'Spline Sans Mono';font-size:.78rem;letter-spacing:2px;
+    text-transform:uppercase;color:var(--hazard);margin-bottom:24px;
+  }
+  .eyebrow::before{content:"";width:30px;height:2px;background:var(--hazard)}
+  h1{
+    font-family:'Archivo Black';
+    font-size:clamp(2.8rem,6.5vw,5.4rem);
+    line-height:.96;letter-spacing:-2px;color:var(--paint);
+    margin-bottom:26px;text-transform:uppercase;
+  }
+  h1 .out{
+    color:transparent;-webkit-text-stroke:2px var(--hazard);
+  }
+  .lead{font-size:1.12rem;color:var(--concrete-2);max-width:46ch;margin-bottom:34px}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .btn{
+    padding:15px 30px;border-radius:var(--r);font-weight:800;font-size:.98rem;
+    cursor:pointer;border:0;transition:transform .15s,background .2s,color .2s;
+  }
+  .btn-y{background:var(--hazard);color:var(--asphalt)}
+  .btn-y:hover{background:var(--paint);transform:translateY(-2px)}
+  .btn-ghost{background:transparent;color:var(--concrete);border:1.5px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--hazard);color:var(--paint)}
+
+  /* tracking card */
+  .track-card{
+    background:var(--asphalt-2);border:1px solid var(--line);border-radius:8px;
+    padding:26px;position:relative;
+  }
+  .track-card::before{
+    content:"";position:absolute;inset:0;border-radius:8px;
+    background:repeating-linear-gradient(90deg,transparent 0 18px,rgba(245,197,24,.05) 18px 20px);
+    pointer-events:none;
+  }
+  .track-card h3{font-family:'Spline Sans Mono';font-size:.82rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--hazard);margin-bottom:18px}
+  .track-input{display:flex;gap:8px;margin-bottom:22px}
+  .track-input input{
+    flex:1;background:var(--asphalt);border:1px solid var(--line);border-radius:var(--r);
+    color:var(--paint);padding:13px 14px;font-family:'Spline Sans Mono';font-size:.92rem;
+  }
+  .track-input input:focus{outline:none;border-color:var(--hazard)}
+  .track-input button{background:var(--hazard);color:var(--asphalt);border:0;border-radius:var(--r);padding:0 18px;font-weight:800;cursor:pointer}
+  .route{display:flex;flex-direction:column;gap:0}
+  .stop{display:flex;gap:14px;align-items:flex-start;position:relative;padding-bottom:20px}
+  .stop:last-child{padding-bottom:0}
+  .stop .dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-top:3px;z-index:2}
+  .stop:not(:last-child)::after{content:"";position:absolute;left:6px;top:18px;bottom:-2px;width:2px;background:var(--line)}
+  .stop.done .dot{background:var(--ok)}
+  .stop.done:not(:last-child)::after{background:var(--ok)}
+  .stop.now .dot{background:var(--hazard);box-shadow:0 0 0 4px rgba(245,197,24,.2)}
+  .stop.pending .dot{background:var(--line)}
+  .stop-info .city{font-weight:700;color:var(--paint);font-size:.95rem}
+  .stop-info .meta{font-family:'Spline Sans Mono';font-size:.74rem;color:var(--concrete-2)}
+
+  /* ===== TICKER ===== */
+  .ticker{background:var(--hazard);color:var(--asphalt);padding:14px 0;overflow:hidden;border-top:3px solid var(--asphalt);border-bottom:3px solid var(--asphalt)}
+  .ticker-track{display:flex;gap:48px;white-space:nowrap;animation:scroll 28s linear infinite;font-family:'Archivo Black';font-size:1rem;letter-spacing:.5px;text-transform:uppercase}
+  .ticker-track span{display:flex;align-items:center;gap:48px}
+  .ticker-track span::after{content:"●";font-size:.6rem}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* ===== STATS ===== */
+  .stats{padding:72px 0;border-bottom:1px solid var(--line)}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+  .stat{padding:8px 28px;border-left:1px solid var(--line)}
+  .stat:first-child{border-left:0;padding-left:0}
+  .stat .num{font-family:'Archivo Black';font-size:clamp(2.4rem,4vw,3.4rem);color:var(--paint);line-height:1}
+  .stat .num .unit{color:var(--hazard)}
+  .stat .label{font-family:'Spline Sans Mono';font-size:.76rem;text-transform:uppercase;letter-spacing:1px;color:var(--concrete-2);margin-top:8px}
+
+  /* ===== SECTION HEADERS ===== */
+  .sec{padding:90px 0}
+  .sec-head{margin-bottom:54px;max-width:680px}
+  .sec-tag{font-family:'Spline Sans Mono';font-size:.78rem;letter-spacing:2px;text-transform:uppercase;color:var(--hazard);margin-bottom:14px;display:block}
+  .sec-head h2{font-family:'Archivo Black';font-size:clamp(2rem,4vw,3rem);line-height:1.02;letter-spacing:-1px;color:var(--paint);text-transform:uppercase}
+  .sec-head p{color:var(--concrete-2);margin-top:18px;font-size:1.05rem}
+
+  /* ===== SERVICES ===== */
+  .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .svc{
+    background:var(--asphalt-2);border:1px solid var(--line);border-radius:8px;padding:30px;
+    position:relative;transition:border-color .25s,transform .25s;overflow:hidden;
+  }
+  .svc:hover{border-color:var(--hazard);transform:translateY(-4px)}
+  .svc .idx{font-family:'Spline Sans Mono';font-size:.8rem;color:var(--concrete-2)}
+  .svc .icon{font-size:2.2rem;margin:16px 0 18px;line-height:1}
+  .svc h3{font-size:1.3rem;font-weight:800;color:var(--paint);margin-bottom:10px}
+  .svc p{font-size:.95rem;color:var(--concrete-2)}
+  .svc .bar{position:absolute;left:0;bottom:0;height:4px;width:0;background:var(--hazard);transition:width .3s}
+  .svc:hover .bar{width:100%}
+
+  /* ===== FLEET / WHY ===== */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+  .feat-list{list-style:none;display:flex;flex-direction:column;gap:4px}
+  .feat-list li{display:flex;gap:18px;padding:20px 0;border-bottom:1px solid var(--line)}
+  .feat-list li:last-child{border-bottom:0}
+  .feat-list .n{font-family:'Archivo Black';color:var(--hazard);font-size:1.1rem;min-width:34px}
+  .feat-list h4{color:var(--paint);font-weight:700;font-size:1.08rem;margin-bottom:4px}
+  .feat-list p{color:var(--concrete-2);font-size:.94rem}
+  .placard{
+    background:var(--asphalt-2);border:1px solid var(--line);border-radius:8px;padding:36px;
+    background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:32px 32px;background-position:center;position:relative;
+  }
+  .placard-inner{background:var(--asphalt);border:2px solid var(--hazard);border-radius:6px;padding:32px}
+  .placard .dot-grid{font-family:'Spline Sans Mono';font-size:.74rem;color:var(--hazard);letter-spacing:2px;margin-bottom:20px}
+  .placard h3{font-family:'Archivo Black';font-size:1.6rem;color:var(--paint);text-transform:uppercase;line-height:1;margin-bottom:16px}
+  .gauge{display:flex;justify-content:space-between;padding:14px 0;border-top:1px solid var(--line)}
+  .gauge .k{font-family:'Spline Sans Mono';font-size:.84rem;color:var(--concrete-2)}
+  .gauge .v{font-weight:800;color:var(--paint)}
+
+  /* ===== CTA BAND ===== */
+  .band{background:var(--hazard);color:var(--asphalt);padding:70px 0;position:relative;overflow:hidden}
+  .band::before,.band::after{content:"";position:absolute;top:0;bottom:0;width:60px;background:repeating-linear-gradient(135deg,var(--asphalt) 0 12px,transparent 12px 24px)}
+  .band::before{left:0}.band::after{right:0}
+  .band-in{display:flex;align-items:center;justify-content:space-between;gap:30px;flex-wrap:wrap}
+  .band h2{font-family:'Archivo Black';font-size:clamp(1.8rem,3.6vw,2.8rem);text-transform:uppercase;line-height:1;letter-spacing:-1px;max-width:18ch}
+  .band .btn-dark{background:var(--asphalt);color:var(--hazard)}
+  .band .btn-dark:hover{background:var(--paint);color:var(--asphalt);transform:translateY(-2px)}
+
+  /* ===== QUOTE FORM ===== */
+  .quote-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:48px}
+  .form{background:var(--asphalt-2);border:1px solid var(--line);border-radius:8px;padding:34px}
+  .frow{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field.full{grid-column:1/-1}
+  .field label{font-family:'Spline Sans Mono';font-size:.74rem;text-transform:uppercase;letter-spacing:1px;color:var(--concrete-2)}
+  .field input,.field select{background:var(--asphalt);border:1px solid var(--line);border-radius:var(--r);color:var(--paint);padding:12px 13px;font-family:'Archivo';font-size:.95rem}
+  .field input:focus,.field select:focus{outline:none;border-color:var(--hazard)}
+  .form .btn-y{width:100%;margin-top:8px}
+  .contact-list{display:flex;flex-direction:column;gap:24px}
+  .contact-item{display:flex;gap:16px;align-items:flex-start;padding-bottom:24px;border-bottom:1px solid var(--line)}
+  .contact-item:last-child{border-bottom:0}
+  .contact-item .ic{font-size:1.5rem}
+  .contact-item .k{font-family:'Spline Sans Mono';font-size:.74rem;text-transform:uppercase;letter-spacing:1px;color:var(--hazard);margin-bottom:4px}
+  .contact-item .v{color:var(--paint);font-weight:600}
+
+  /* ===== FOOTER ===== */
+  footer{padding:64px 0 30px;border-top:1px solid var(--line)}
+  .foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px}
+  .foot-brand .logo{margin-bottom:16px}
+  .foot-brand p{color:var(--concrete-2);font-size:.92rem;max-width:32ch}
+  .foot-col h5{font-family:'Spline Sans Mono';font-size:.76rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--hazard);margin-bottom:16px}
+  .foot-col a{display:block;color:var(--concrete-2);font-size:.92rem;padding:5px 0;transition:color .2s}
+  .foot-col a:hover{color:var(--paint)}
+  .foot-bot{display:flex;justify-content:space-between;align-items:center;padding-top:26px;border-top:1px solid var(--line);flex-wrap:wrap;gap:14px}
+  .foot-bot p{font-family:'Spline Sans Mono';font-size:.78rem;color:var(--concrete-2)}
+  .dot-num{font-family:'Spline Sans Mono';font-size:.78rem;color:var(--hazard)}
+
+  /* ===== RESPONSIVE ===== */
+  @media(max-width:900px){
+    .hero-grid,.split,.quote-grid{grid-template-columns:1fr;gap:38px}
+    .stats-grid{grid-template-columns:1fr 1fr;gap:24px}
+    .stat{border-left:0;padding:0}
+    .services-grid{grid-template-columns:1fr}
+    .foot-grid{grid-template-columns:1fr 1fr;gap:30px}
+    .nav-links{
+      position:fixed;inset:74px 0 auto 0;background:var(--asphalt-2);
+      flex-direction:column;gap:0;padding:10px 0;border-bottom:1px solid var(--line);
+      transform:translateY(-150%);transition:transform .3s;
+    }
+    .nav-links.open{transform:translateY(0)}
+    .nav-links a{padding:14px 28px;width:100%}
+    .nav-links .nav-cta{margin:10px 28px;text-align:center}
+    .burger{display:flex}
+  }
+  @media(max-width:520px){
+    .frow{grid-template-columns:1fr}
+    .stats-grid{grid-template-columns:1fr}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+
+<div class="stripe"></div>
+
+<nav>
+  <div class="wrap nav-in">
+    <a href="#" class="logo"><span class="mark">▲</span>IRONLINE<span style="color:var(--hazard)">/</span></a>
+    <div class="nav-links" id="navlinks">
+      <a href="#services">Services</a>
+      <a href="#fleet">Fleet</a>
+      <a href="#why">Why Ironline</a>
+      <a href="#quote">Get a Quote</a>
+      <a href="#quote" class="nav-cta">Ship Now →</a>
+    </div>
+    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">DOT #1180427 · Est. 1994 · 48 States</span>
+      <h1>Freight that<br><span class="out">never sleeps</span></h1>
+      <p class="lead">Full truckload, LTL, and expedited shipping across North America. Real-time GPS on every load, no detention surprises, and dispatchers who answer on the first ring.</p>
+      <div class="hero-cta">
+        <button class="btn btn-y" onclick="document.getElementById('quote').scrollIntoView()">Get a Rate Quote</button>
+        <a href="#fleet" class="btn btn-ghost">See the Fleet</a>
+      </div>
+    </div>
+
+    <div class="track-card">
+      <h3>◉ Track a Shipment</h3>
+      <div class="track-input">
+        <input type="text" placeholder="PRO # e.g. IRL-88421" aria-label="Tracking number">
+        <button onclick="trackDemo()">Go</button>
+      </div>
+      <div class="route" id="route">
+        <div class="stop done"><span class="dot"></span><div class="stop-info"><div class="city">Long Beach, CA</div><div class="meta">PICKED UP · 06:14 PST</div></div></div>
+        <div class="stop done"><span class="dot"></span><div class="stop-info"><div class="city">Phoenix, AZ — Hub</div><div class="meta">SCANNED · 14:02 MST</div></div></div>
+        <div class="stop now"><span class="dot"></span><div class="stop-info"><div class="city">Amarillo, TX</div><div class="meta">IN TRANSIT · ETA 09:30 CST</div></div></div>
+        <div class="stop pending"><span class="dot"></span><div class="stop-info"><div class="city">Columbus, OH</div><div class="meta">SCHEDULED · Thu</div></div></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span>Dry Van&nbsp;&nbsp;Reefer&nbsp;&nbsp;Flatbed&nbsp;&nbsp;Expedited&nbsp;&nbsp;Intermodal&nbsp;&nbsp;Warehousing&nbsp;&nbsp;Last Mile&nbsp;&nbsp;</span>
+    <span>Dry Van&nbsp;&nbsp;Reefer&nbsp;&nbsp;Flatbed&nbsp;&nbsp;Expedited&nbsp;&nbsp;Intermodal&nbsp;&nbsp;Warehousing&nbsp;&nbsp;Last Mile&nbsp;&nbsp;</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="wrap stats-grid">
+    <div class="stat"><div class="num">98.7<span class="unit">%</span></div><div class="label">On-time delivery</div></div>
+    <div class="stat"><div class="num">2.1<span class="unit">M</span></div><div class="label">Miles per week</div></div>
+    <div class="stat"><div class="num">640<span class="unit">+</span></div><div class="label">Power units</div></div>
+    <div class="stat"><div class="num">24<span class="unit">/7</span></div><div class="label">Live dispatch</div></div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="sec" id="services">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-tag">// What we haul</span>
+      <h2>One carrier, every load type</h2>
+      <p>From a single pallet to a full reefer of perishables, we match the right equipment and lane to your freight.</p>
+    </div>
+    <div class="services-grid">
+      <div class="svc"><div class="idx">01</div><div class="icon">📦</div><h3>Full Truckload</h3><p>Dedicated trailers, direct lanes, and sealed loads from dock to dock with no rehandling.</p><span class="bar"></span></div>
+      <div class="svc"><div class="idx">02</div><div class="icon">❄️</div><h3>Refrigerated</h3><p>Temperature-controlled reefers with continuous monitoring for food, pharma, and produce.</p><span class="bar"></span></div>
+      <div class="svc"><div class="idx">03</div><div class="icon">🏗️</div><h3>Flatbed & Heavy</h3><p>Step-deck, conestoga, and oversize permits for steel, machinery, and building materials.</p><span class="bar"></span></div>
+      <div class="svc"><div class="idx">04</div><div class="icon">⚡</div><h3>Expedited</h3><p>Team drivers and hot-shot service when the load absolutely has to be there tomorrow.</p><span class="bar"></span></div>
+      <div class="svc"><div class="idx">05</div><div class="icon">🚉</div><h3>Intermodal</h3><p>Rail-and-road combinations that cut long-haul costs without sacrificing transit reliability.</p><span class="bar"></span></div>
+      <div class="svc"><div class="idx">06</div><div class="icon">🏬</div><h3>Warehousing</h3><p>Cross-dock, short-term storage, and last-mile staging out of seven regional terminals.</p><span class="bar"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="sec" id="why" style="border-top:1px solid var(--line)">
+  <div class="wrap split">
+    <div>
+      <div class="sec-head" style="margin-bottom:30px">
+        <span class="sec-tag">// Why shippers stay</span>
+        <h2>Built like a tractor,<br>run like a startup</h2>
+      </div>
+      <ul class="feat-list">
+        <li><span class="n">01</span><div><h4>Live GPS on every trailer</h4><p>Watch your load move in real time and share a tracking link with your customer.</p></div></li>
+        <li><span class="n">02</span><div><h4>No detention games</h4><p>Transparent accessorial pricing posted up front — you never get a surprise invoice.</p></div></li>
+        <li><span class="n">03</span><div><h4>Dedicated account reps</h4><p>One named contact who knows your freight, not a rotating call-center queue.</p></div></li>
+        <li><span class="n">04</span><div><h4>$1M cargo coverage</h4><p>Fully insured, DOT-compliant, and SmartWay certified across the whole fleet.</p></div></li>
+      </ul>
+    </div>
+    <div class="placard">
+      <div class="placard-inner">
+        <div class="dot-grid">● ● ● ● ● ● ● ● ● ●</div>
+        <h3>Fleet Status<br>Board</h3>
+        <div class="gauge"><span class="k">Available power units</span><span class="v">214</span></div>
+        <div class="gauge"><span class="k">Avg. response time</span><span class="v">&lt; 4 min</span></div>
+        <div class="gauge"><span class="k">Damage-free rate</span><span class="v">99.94%</span></div>
+        <div class="gauge"><span class="k">Open lanes today</span><span class="v">1,308</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="band">
+  <div class="wrap band-in">
+    <h2>Got freight sitting on a dock?</h2>
+    <button class="btn btn-dark" onclick="document.getElementById('quote').scrollIntoView()">Book a truck →</button>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="sec" id="quote" aria-labelledby="fleet">
+  <div class="wrap quote-grid" id="fleet">
+    <div>
+      <div class="sec-head" style="margin-bottom:30px">
+        <span class="sec-tag">// Get rolling</span>
+        <h2>Request a rate</h2>
+        <p>Tell us the lane and the load. A dispatcher follows up within the hour during business days.</p>
+      </div>
+      <div class="contact-list">
+        <div class="contact-item"><span class="ic">📞</span><div><div class="k">Dispatch line</div><div class="v">1-800-IRONLINE</div></div></div>
+        <div class="contact-item"><span class="ic">✉️</span><div><div class="k">Email</div><div class="v">freight@ironline.example</div></div></div>
+        <div class="contact-item"><span class="ic">📍</span><div><div class="k">HQ Terminal</div><div class="v">4400 Distribution Pkwy, Columbus, OH</div></div></div>
+      </div>
+    </div>
+
+    <div class="form">
+      <div class="frow">
+        <div class="field"><label>Name</label><input type="text" placeholder="Jordan Reyes"></div>
+        <div class="field"><label>Company</label><input type="text" placeholder="Reyes Distributing"></div>
+      </div>
+      <div class="frow">
+        <div class="field"><label>Origin ZIP</label><input type="text" placeholder="90802"></div>
+        <div class="field"><label>Destination ZIP</label><input type="text" placeholder="43004"></div>
+      </div>
+      <div class="frow">
+        <div class="field"><label>Equipment</label>
+          <select><option>Dry Van</option><option>Reefer</option><option>Flatbed</option><option>Expedited</option><option>Intermodal</option></select>
+        </div>
+        <div class="field"><label>Weight (lbs)</label><input type="text" placeholder="24,000"></div>
+      </div>
+      <div class="field full" style="margin-bottom:14px"><label>Notes</label><input type="text" placeholder="Pickup ready Thursday AM, liftgate needed"></div>
+      <button class="btn btn-y" onclick="quoteDemo(this)">Request Quote</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a href="#" class="logo"><span class="mark">▲</span>IRONLINE<span style="color:var(--hazard)">/</span></a>
+        <p>Coast-to-coast freight since 1994. DOT-compliant, SmartWay certified, and family-owned out of Columbus, Ohio.</p>
+      </div>
+      <div class="foot-col"><h5>Services</h5><a href="#services">Truckload</a><a href="#services">Refrigerated</a><a href="#services">Flatbed</a><a href="#services">Expedited</a></div>
+      <div class="foot-col"><h5>Company</h5><a href="#why">About</a><a href="#fleet">Fleet</a><a href="#">Careers</a><a href="#">Drive for us</a></div>
+      <div class="foot-col"><h5>Support</h5><a href="#quote">Get a quote</a><a href="#">Track shipment</a><a href="#">Claims</a><a href="#">Contact</a></div>
+    </div>
+    <div class="foot-bot">
+      <p>© 1994–2026 Ironline Freight LLC · All rights reserved</p>
+      <p class="dot-num">DOT #1180427 · MC #482910</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const burger=document.getElementById('burger'),links=document.getElementById('navlinks');
+  burger.addEventListener('click',()=>links.classList.toggle('open'));
+  links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>links.classList.remove('open')));
+
+  function trackDemo(){
+    const stops=document.querySelectorAll('#route .stop');
+    stops.forEach(s=>{s.classList.remove('now');});
+    // simple demo: nudge the "now" marker forward
+    let i=[...stops].findIndex(s=>s.classList.contains('pending'));
+    if(i>0){stops[i-1].classList.remove('now');stops[i-1].classList.add('done');stops[i].classList.remove('pending');stops[i].classList.add('now');}
+  }
+  function quoteDemo(btn){
+    btn.textContent='✓ Quote requested';
+    btn.style.background='var(--ok)';btn.style.color='#fff';
+    setTimeout(()=>{btn.textContent='Request Quote';btn.style.background='';btn.style.color='';},2200);
+  }
+</script>
+</body>
+</html>
